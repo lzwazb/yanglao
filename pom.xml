@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>administrator-server</module>
+        <module>login-server</module>
     </modules>
 
     <properties>
