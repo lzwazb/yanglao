@@ -13,14 +13,15 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$PROJECT_DIR$/../../javatools/Maven-repository/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+          <entry name="$PROJECT_DIR$/../../javatools/Maven-repository/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
-        <module name="administrator" />
+        <module name="administrator-server" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="administrator" options="-parameters" />
+      <module name="administrator-server" options="-parameters" />
       <module name="yanglao" options="-parameters" />
     </option>
   </component>

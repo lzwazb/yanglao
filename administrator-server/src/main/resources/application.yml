@@ -1,0 +1,15 @@
+server:
+  port: 5000
+spring:
+  application:
+    name: Administrator-provider
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+  config:
+    import:
+      -nacos:administrator-server.yaml
+
