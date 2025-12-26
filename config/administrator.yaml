@@ -4,10 +4,11 @@ spring:
   datasource:
     username: root
     password: Zz205412(your_password)
-    url: jdbc:mysql://localhost:3306/yanglao_administrator?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&
+    url: jdbc:mysql://localhost:3306/yanglao?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 
+# mybatis-plus 配置项
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
@@ -18,3 +19,13 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
+
+# Swagger UI 配置项
+springdoc:
+  api-docs:
+    path: /v3/api-docs             # OpenAPI JSON 数据接口路径
+  swagger-ui:
+    path: /swagger-ui.html         # Swagger UI 访问路径
+    tags-sorter: alpha             # 接口分组按字母排序
+    operations-sorter: method      # 接口方法按请求类型排序 (GET/POST/...)
+    doc-expansion: none            # 默认折叠所有接口，保持页面整洁

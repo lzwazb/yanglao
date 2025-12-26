@@ -2,19 +2,12 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-      </profile>
-      <profile name="Annotation profile for yanglao" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/../../javatools/Maven-repository/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-          <entry name="$PROJECT_DIR$/../../javatools/Maven-repository/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
-        </processorPath>
+        <module name="login-server" />
         <module name="administrator-server" />
       </profile>
     </annotationProcessing>
@@ -22,7 +15,8 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="administrator-server" options="-parameters" />
-      <module name="yanglao" options="-parameters" />
+      <module name="login-server" options="-parameters" />
+      <module name="yanglao" options="" />
     </option>
   </component>
 </project>
