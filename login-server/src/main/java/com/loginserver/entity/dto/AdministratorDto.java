@@ -1,9 +1,7 @@
-package com.administrator.entity.dto;
+package com.loginserver.entity.dto;
 
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class AdministratorDto {

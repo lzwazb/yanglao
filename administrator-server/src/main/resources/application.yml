@@ -1,5 +1,5 @@
 server:
-  port: 5000
+  port: 5001
 spring:
   application:
     name: Administrator-server
@@ -11,5 +11,5 @@ spring:
         server-addr: 127.0.0.1:8848
   config:
     import:
-      - nacos:administrator-server.yaml
+      - nacos:login-server.yaml
 
