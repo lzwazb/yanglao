@@ -20,6 +20,16 @@ public class Employee {
     private String name;
 
     /**
+     * 账号
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
+
+    /**
      * 性别
      */
     private String gender;
