@@ -2,7 +2,7 @@ server:
   port: 5000
 spring:
   application:
-    name: Administrator-server
+    name: login-server
   cloud:
     nacos:
       discovery:

@@ -2,7 +2,7 @@ server:
   port: 5001
 spring:
   application:
-    name: Administrator-server
+    name: administrator-server
   cloud:
     nacos:
       discovery:
