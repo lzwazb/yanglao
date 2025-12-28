@@ -22,7 +22,7 @@ public class User {
 
     private String phone;
 
-    private String avatar; //用户头像URLx
+    private String avatar; //用户头像URL
 
     private Integer status;
 
