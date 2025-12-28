@@ -49,17 +49,17 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public Family familyLogin(FamilyDto familyDto) {
-        LambdaQueryWrapper<Administrator> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Administrator::getUsername, administratorDto.getUsername());
-        queryWrapper.eq(Administrator::getPassword, administratorDto.getPassword());
-        return administratorDao.selectOne(queryWrapper);
+        LambdaQueryWrapper<Family> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Family::getUsername, familyDto.getUsername());
+        queryWrapper.eq(Family::getPassword, familyDto.getPassword());
+        return familyDao.selectOne(queryWrapper);
     }
 
     @Override
     public User userLogin(UserDto userDto) {
-        LambdaQueryWrapper<Administrator> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Administrator::getUsername, administratorDto.getUsername());
-        queryWrapper.eq(Administrator::getPassword, administratorDto.getPassword());
-        return administratorDao.selectOne(queryWrapper);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUsername, userDto.getUsername());
+        queryWrapper.eq(User::getPassword, userDto.getPassword());
+        return userDao.selectOne(queryWrapper);
     }
 }
