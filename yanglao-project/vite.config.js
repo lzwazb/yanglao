@@ -30,6 +30,11 @@ export default defineConfig({
         target: 'http://localhost:5001',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/administrator/, '/administrator')
+      },
+      '/api/user': {
+        target: 'http://localhost:5002',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/user/, '/user')
       }
     }
   }
