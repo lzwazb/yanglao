@@ -1,8 +1,9 @@
 server:
-  port: 5001
+  port: 5002
+
 spring:
   application:
-    name: administrator-server
+    name: user-server
   cloud:
     nacos:
       discovery:
@@ -11,5 +12,6 @@ spring:
         server-addr: 127.0.0.1:8848
   config:
     import:
-      - nacos:administrator-server.yaml
+      - nacos:user-server.yaml
+
 

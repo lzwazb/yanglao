@@ -17,6 +17,8 @@
     <modules>
         <module>administrator-server</module>
         <module>login-server</module>
+        <!-- 用户与权限独立模块 -->
+        <module>user-server</module>
     </modules>
 
     <properties>

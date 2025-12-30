@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="login-server" />
         <module name="administrator-server" />
+        <module name="user-server" />
       </profile>
     </annotationProcessing>
   </component>
@@ -16,6 +17,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="administrator-server" options="-parameters" />
       <module name="login-server" options="-parameters" />
+      <module name="user-server" options="-parameters" />
       <module name="yanglao" options="" />
     </option>
   </component>
