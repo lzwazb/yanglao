@@ -52,6 +52,20 @@
             <el-menu-item index="/layout/admin/administrator">管理员管理</el-menu-item>
           </el-sub-menu>
 
+          <el-sub-menu index="service-manage" v-if="userStore.userType === 'admin'">
+            <template #title>
+              <el-icon><Service /></el-icon>
+              <span>服务管理</span>
+            </template>
+            <el-menu-item index="/layout/admin/service">服务项目管理</el-menu-item>
+            <el-menu-item index="/layout/admin/service/order">服务订单管理</el-menu-item>
+          </el-sub-menu>
+
+          <el-menu-item index="/layout/admin/notice" v-if="userStore.userType === 'admin'">
+            <el-icon><Bell /></el-icon>
+            <span>公告管理</span>
+          </el-menu-item>
+
           <el-menu-item index="/layout/service/booking" v-if="['user', 'family'].includes(userStore.userType)">
             <el-icon><Calendar /></el-icon>
             <span>服务预约</span>
@@ -208,4 +222,3 @@ const handleCommand = (command) => {
   padding: 20px;
 }
 </style>
-

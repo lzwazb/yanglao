@@ -149,4 +149,16 @@ public class RegisterServiceImpl implements RegisterService {
         
         return family;
     }
+
+    @Override
+    public Integer findFamilyIdByName(String name) {
+        if (!StringUtils.hasText(name)) {
+            return null;
+        }
+        LambdaQueryWrapper<Family> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Family::getName, name);
+        // 假设姓名可能重复，这里只取第一个，或者根据业务需求调整
+        Family family = familyDao.selectOne(queryWrapper);
+        return family != null ? family.getId() : null;
+    }
 }

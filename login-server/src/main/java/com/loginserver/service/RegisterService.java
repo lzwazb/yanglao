@@ -38,4 +38,11 @@ public interface RegisterService {
      * @return 注册成功的家人信息
      */
     Family registerFamily(RegisterFamilyDto registerFamilyDto);
+
+    /**
+     * 根据姓名查找家属ID
+     * @param name 家属姓名
+     * @return 家属ID，如果未找到返回null
+     */
+    Integer findFamilyIdByName(String name);
 }

@@ -3,7 +3,7 @@ author: azusanya
 spring:
   datasource:
     username: root
-    password: Zz205412(your_password)
+    password: Zz205412
     url: jdbc:mysql://localhost:3306/yanglao?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource

@@ -4,8 +4,8 @@
       <template #header>
         <span>公告栏</span>
       </template>
-      <el-scrollbar height="600px">
-        <el-timeline>
+      <el-scrollbar height="600px" v-loading="loading">
+        <el-timeline v-if="notices.length > 0">
           <el-timeline-item
             v-for="notice in notices"
             :key="notice.id"
@@ -16,12 +16,13 @@
               <h4>{{ notice.title }}</h4>
               <p>{{ notice.content }}</p>
               <div class="notice-footer">
-                <el-tag size="small" :type="notice.type === '重要' ? 'danger' : 'info'">{{ notice.type }}</el-tag>
+                <el-tag size="small" :type="getNoticeType(notice.type)">{{ notice.type }}</el-tag>
                 <span class="notice-author">发布人：{{ notice.author }}</span>
               </div>
             </el-card>
           </el-timeline-item>
         </el-timeline>
+        <el-empty v-else description="暂无公告" />
       </el-scrollbar>
     </el-card>
   </div>
@@ -29,36 +30,34 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { getNoticeList } from '@/api/notice'
 
-const notices = ref([
-  {
-    id: 1,
-    title: '欢迎使用养老服务平台',
-    content: '平台正式上线，为老年人提供全方位的养老服务，包括生活服务、健康管理、活动管理等。',
-    type: '重要',
-    author: '管理员',
-    createTime: '2024-01-01 10:00:00'
-  },
-  {
-    id: 2,
-    title: '系统维护通知',
-    content: '系统将于2024年1月20日进行维护，维护期间可能无法正常使用，请提前做好准备。',
-    type: '通知',
-    author: '管理员',
-    createTime: '2024-01-15 14:00:00'
-  },
-  {
-    id: 3,
-    title: '健康讲座活动通知',
-    content: '本周六下午2点在社区活动中心举办健康讲座，欢迎各位老人参加。',
-    type: '活动',
-    author: '管理员',
-    createTime: '2024-01-16 09:00:00'
+const notices = ref([])
+const loading = ref(false)
+
+const loadNotices = async () => {
+  loading.value = true
+  try {
+    const res = await getNoticeList()
+    notices.value = res
+  } catch (error) {
+    console.error('获取公告列表失败', error)
+  } finally {
+    loading.value = false
   }
-])
+}
+
+const getNoticeType = (type) => {
+  const map = {
+    '重要': 'danger',
+    '通知': 'primary',
+    '活动': 'success'
+  }
+  return map[type] || 'info'
+}
 
 onMounted(() => {
-  // TODO: 加载公告列表
+  loadNotices()
 })
 </script>
 
@@ -79,4 +78,3 @@ onMounted(() => {
   color: #999;
 }
 </style>
-

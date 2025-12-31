@@ -60,6 +60,26 @@ const routes = [
         component: () => import('@/views/admin/AdministratorManagement.vue'),
         meta: { title: '管理员管理', requiresAuth: true, role: 'admin' }
       },
+      // 服务管理 (管理员)
+      {
+        path: 'admin/service',
+        name: 'ServiceManagement',
+        component: () => import('@/views/admin/ServiceManagement.vue'),
+        meta: { title: '服务项目管理', requiresAuth: true, role: 'admin' }
+      },
+      {
+        path: 'admin/service/order',
+        name: 'ServiceOrderManagement',
+        component: () => import('@/views/admin/ServiceOrderManagement.vue'),
+        meta: { title: '服务订单管理', requiresAuth: true, role: 'admin' }
+      },
+      // 公告管理 (管理员)
+      {
+        path: 'admin/notice',
+        name: 'NoticeManagement',
+        component: () => import('@/views/admin/NoticeManagement.vue'),
+        meta: { title: '公告管理', requiresAuth: true, role: 'admin' }
+      },
       // 服务预约
       {
         path: 'service/booking',
@@ -153,4 +173,3 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
-

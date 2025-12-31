@@ -14,7 +14,7 @@ import lombok.Data;
 @Schema(name = "管理员")
 public class Administrator {
 
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Integer id;
 
     /**

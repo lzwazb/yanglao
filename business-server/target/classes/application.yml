@@ -1,0 +1,15 @@
+server:
+  port: 5003
+
+spring:
+  application:
+    name: business-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+  config:
+    import:
+      - nacos:business-server.yaml

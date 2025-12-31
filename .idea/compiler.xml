@@ -8,6 +8,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="login-server" />
+        <module name="business-server" />
+        <module name="common-server" />
         <module name="administrator-server" />
         <module name="user-server" />
       </profile>
@@ -16,6 +18,8 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="administrator-server" options="-parameters" />
+      <module name="business-server" options="-parameters" />
+      <module name="common-server" options="-parameters" />
       <module name="login-server" options="-parameters" />
       <module name="user-server" options="-parameters" />
       <module name="yanglao" options="" />

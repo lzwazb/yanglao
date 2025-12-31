@@ -1,5 +1,7 @@
 package com.loginserver.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 @Schema(name = "用户")
 public class User {
 
+    @TableId(type = IdType.ASSIGN_ID)
     private Integer id;
 
     private String username;

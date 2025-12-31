@@ -69,6 +69,13 @@ export const registerApi = {
       method: 'post',
       data
     })
+  },
+  // 根据姓名查找家属ID
+  findFamilyIdByName(name) {
+    return request({
+      url: '/register/findFamilyId',
+      method: 'get',
+      params: { name }
+    })
   }
 }
-

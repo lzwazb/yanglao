@@ -12,10 +12,7 @@ import com.loginserver.service.RegisterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/register")
@@ -48,5 +45,10 @@ public class RegisterController {
     public Family registerFamily(@RequestBody RegisterFamilyDto registerFamilyDto) {
         return registerService.registerFamily(registerFamilyDto);
     }
-}
 
+    @Operation(summary = "查找家属ID", description = "根据姓名查找家属ID")
+    @GetMapping("/findFamilyId")
+    public Integer findFamilyId(@RequestParam String name) {
+        return registerService.findFamilyIdByName(name);
+    }
+}

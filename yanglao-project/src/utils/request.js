@@ -25,12 +25,11 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    const res = response.data
-    if (res.code && res.code !== 200) {
-      ElMessage.error(res.message || '请求失败')
-      return Promise.reject(new Error(res.message || '请求失败'))
-    }
-    return res
+    // 如果后端直接返回数据（如 boolean 或 List），而不是包装对象 {code: 200, data: ...}
+    // 则直接返回 response.data
+    // 这里需要根据后端实际返回格式进行调整。
+    // 假设后端目前大部分接口直接返回数据，或者没有统一包装 code
+    return response.data
   },
   error => {
     console.error('响应错误:', error)
@@ -40,4 +39,3 @@ service.interceptors.response.use(
 )
 
 export default service
-

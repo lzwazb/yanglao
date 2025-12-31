@@ -20,8 +20,8 @@
             <el-form-item label="手机号" prop="phone">
               <el-input v-model="userForm.phone" placeholder="请输入手机号" />
             </el-form-item>
-            <el-form-item label="家庭ID" prop="familyId">
-              <el-input-number v-model="userForm.familyId" :min="1" placeholder="请输入家庭ID" />
+            <el-form-item label="亲属姓名" prop="familyName">
+              <el-input v-model="userForm.familyName" placeholder="请输入亲属姓名" />
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="handleUserRegister" :loading="loading" style="width: 100%">注册</el-button>
@@ -76,7 +76,8 @@ const userForm = reactive({
   realName: '',
   email: '',
   phone: '',
-  familyId: null
+  familyName: '', // 替换 familyId 为 familyName
+  familyId: null // 内部存储查找到的ID
 })
 
 const familyForm = reactive({
@@ -89,7 +90,8 @@ const familyForm = reactive({
 
 const userRules = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+  familyName: [{ required: true, message: '请输入亲属姓名', trigger: 'blur' }]
 }
 
 const familyRules = {
@@ -105,7 +107,27 @@ const handleUserRegister = async () => {
     if (valid) {
       loading.value = true
       try {
-        await registerApi.userRegister(userForm)
+        // 1. 先根据亲属姓名查找ID
+        const familyId = await registerApi.findFamilyIdByName(userForm.familyName)
+
+        if (!familyId) {
+          ElMessage.error('未找到该亲属姓名，注册失败')
+          loading.value = false
+          return
+        }
+
+        userForm.familyId = familyId
+
+        // 2. 提交注册
+        await registerApi.userRegister({
+          username: userForm.username,
+          password: userForm.password,
+          realName: userForm.realName,
+          email: userForm.email,
+          phone: userForm.phone,
+          familyId: userForm.familyId
+        })
+
         ElMessage.success('注册成功，请登录')
         router.push('/login')
       } catch (error) {
@@ -169,4 +191,3 @@ const handleFamilyRegister = async () => {
   color: #666;
 }
 </style>
-

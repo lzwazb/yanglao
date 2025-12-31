@@ -19,6 +19,8 @@
         <module>login-server</module>
         <!-- 用户与权限独立模块 -->
         <module>user-server</module>
+        <module>business-server</module>
+        <module>common-server</module>
     </modules>
 
     <properties>

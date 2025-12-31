@@ -17,13 +17,22 @@
       <el-col :span="12">
         <el-card>
           <template #header>
-            <span>最新公告</span>
+            <div class="card-header">
+              <span>最新公告</span>
+              <el-button link type="primary" @click="$router.push('/layout/notice/list')">查看更多</el-button>
+            </div>
           </template>
-          <el-timeline>
-            <el-timeline-item v-for="notice in notices" :key="notice.id" :timestamp="notice.time">
-              {{ notice.content }}
+          <el-timeline v-if="notices.length > 0">
+            <el-timeline-item
+              v-for="notice in notices"
+              :key="notice.id"
+              :timestamp="formatTime(notice.createTime)"
+              :type="getNoticeType(notice.type)"
+            >
+              {{ notice.title }}
             </el-timeline-item>
           </el-timeline>
+          <el-empty v-else description="暂无公告" :image-size="60" />
         </el-card>
       </el-col>
       <el-col :span="12">
@@ -44,9 +53,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { User, UserFilled, Service, Trophy } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
+import { getNoticeList } from '@/api/notice'
 
 const userStore = useUserStore()
 
@@ -57,15 +67,41 @@ const stats = ref([
   { title: '活动总数', value: '0', icon: Trophy, color: '#F56C6C' }
 ])
 
-const notices = ref([
-  { id: 1, content: '欢迎使用养老服务平台', time: '2024-01-01' },
-  { id: 2, content: '系统维护通知', time: '2024-01-02' }
-])
+const notices = ref([])
 
 const activities = ref([
   { id: 1, name: '健康讲座', status: '进行中' },
   { id: 2, name: '社区活动', status: '已报名' }
 ])
+
+const loadNotices = async () => {
+  try {
+    const res = await getNoticeList()
+    // 只取最新的5条公告
+    notices.value = res.slice(0, 5)
+  } catch (error) {
+    console.error('获取公告失败', error)
+  }
+}
+
+const formatTime = (timeStr) => {
+  if (!timeStr) return ''
+  // 简单截取日期部分 yyyy-MM-dd
+  return timeStr.split(' ')[0]
+}
+
+const getNoticeType = (type) => {
+  const map = {
+    '重要': 'danger',
+    '通知': 'primary',
+    '活动': 'success'
+  }
+  return map[type] || 'info'
+}
+
+onMounted(() => {
+  loadNotices()
+})
 </script>
 
 <style scoped>
@@ -98,5 +134,10 @@ const activities = ref([
   color: #666;
   margin-top: 5px;
 }
-</style>
 
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+</style>

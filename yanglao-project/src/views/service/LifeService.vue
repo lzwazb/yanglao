@@ -8,69 +8,66 @@
         <el-col :span="8" v-for="service in services" :key="service.id">
           <el-card class="service-card" shadow="hover">
             <div class="service-icon">
-              <el-icon :size="50" :color="service.color"><component :is="service.icon" /></el-icon>
+              <!-- 动态图标处理，如果后端返回的icon是字符串，这里需要映射或者直接显示图片 -->
+              <!-- 暂时使用默认图标，或者根据名称匹配 -->
+              <el-icon :size="50" color="#409EFF"><component :is="getIcon(service.icon)" /></el-icon>
             </div>
             <h3>{{ service.name }}</h3>
             <p>{{ service.description }}</p>
+            <div class="price">参考价格: ¥{{ service.price }}</div>
             <el-button type="primary" @click="handleBook(service)">立即预约</el-button>
           </el-card>
         </el-col>
       </el-row>
     </el-card>
-
-    <el-dialog v-model="bookingDialogVisible" title="服务预约" width="500px">
-      <el-form :model="bookingForm" label-width="100px">
-        <el-form-item label="服务名称">
-          <el-input v-model="bookingForm.serviceName" disabled />
-        </el-form-item>
-        <el-form-item label="预约日期">
-          <el-date-picker v-model="bookingForm.date" type="date" placeholder="选择日期" />
-        </el-form-item>
-        <el-form-item label="预约时间">
-          <el-time-picker v-model="bookingForm.time" placeholder="选择时间" />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="bookingForm.remark" type="textarea" :rows="3" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="bookingDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmitBooking">确定</el-button>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { ElMessage } from 'element-plus'
-import { Tools, ShoppingBag, Coffee, HomeFilled } from '@element-plus/icons-vue'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { Tools, ShoppingBag, Coffee, HomeFilled, Service } from '@element-plus/icons-vue'
+import { getServiceList } from '@/api/service'
 
-const services = ref([
-  { id: 1, name: '家政保洁', description: '专业保洁服务，让您的家更整洁', icon: Tools, color: '#409EFF' },
-  { id: 2, name: '助餐服务', description: '营养配餐，送餐上门', icon: ShoppingBag, color: '#67C23A' },
-  { id: 3, name: '助浴服务', description: '专业助浴，安全舒适', icon: Coffee, color: '#E6A23C' },
-  { id: 4, name: '上门维修', description: '家电维修，快速响应', icon: HomeFilled, color: '#F56C6C' }
-])
+const router = useRouter()
+const services = ref([])
 
-const bookingDialogVisible = ref(false)
-const bookingForm = reactive({
-  serviceName: '',
-  date: null,
-  time: null,
-  remark: ''
-})
+// 图标映射
+const iconMap = {
+  'Tools': Tools,
+  'ShoppingBag': ShoppingBag,
+  'Coffee': Coffee,
+  'HomeFilled': HomeFilled
+}
+
+const getIcon = (iconName) => {
+  return iconMap[iconName] || Service
+}
+
+const loadServices = async () => {
+  try {
+    const res = await getServiceList()
+    services.value = res
+  } catch (error) {
+    console.error('获取服务列表失败', error)
+  }
+}
 
 const handleBook = (service) => {
-  bookingForm.serviceName = service.name
-  bookingDialogVisible.value = true
+  // 跳转到预约页面，并传递服务ID和服务名称
+  // 注意：这里需要使用完整的路由路径，包括 /layout 前缀
+  router.push({
+    path: '/layout/service/booking',
+    query: {
+      serviceId: service.id,
+      serviceName: service.name
+    }
+  })
 }
 
-const handleSubmitBooking = () => {
-  ElMessage.success('预约成功')
-  bookingDialogVisible.value = false
-  // TODO: 调用后端接口
-}
+onMounted(() => {
+  loadServices()
+})
 </script>
 
 <style scoped>
@@ -81,7 +78,7 @@ const handleSubmitBooking = () => {
 .service-card {
   text-align: center;
   margin-bottom: 20px;
-  height: 250px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -99,7 +96,13 @@ const handleSubmitBooking = () => {
 .service-card p {
   color: #666;
   font-size: 14px;
+  margin-bottom: 10px;
+  flex-grow: 1;
+}
+
+.price {
+  color: #f56c6c;
+  font-weight: bold;
   margin-bottom: 15px;
 }
 </style>
-

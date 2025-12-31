@@ -35,6 +35,16 @@ export default defineConfig({
         target: 'http://localhost:5002',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/user/, '/user')
+      },
+      '/api/service': {
+        target: 'http://localhost:5003',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/service/, '/service')
+      },
+      '/api/notice': {
+        target: 'http://localhost:5004',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/notice/, '/notice')
       }
     }
   }
