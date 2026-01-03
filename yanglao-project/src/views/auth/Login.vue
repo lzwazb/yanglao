@@ -42,19 +42,6 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="员工登录" name="employee">
-          <el-form :model="employeeForm" :rules="rules" ref="employeeFormRef" label-width="80px">
-            <el-form-item label="用户名" prop="username">
-              <el-input v-model="employeeForm.username" placeholder="请输入用户名" />
-            </el-form-item>
-            <el-form-item label="密码" prop="password">
-              <el-input v-model="employeeForm.password" type="password" placeholder="请输入密码" show-password />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="handleEmployeeLogin" :loading="loading" style="width: 100%">登录</el-button>
-            </el-form-item>
-          </el-form>
-        </el-tab-pane>
       </el-tabs>
       <div class="register-link">
         <span>还没有账号？</span>
@@ -92,11 +79,6 @@ const adminForm = reactive({
   password: ''
 })
 
-const employeeForm = reactive({
-  username: '',
-  password: ''
-})
-
 const rules = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
@@ -105,7 +87,6 @@ const rules = {
 const userFormRef = ref()
 const familyFormRef = ref()
 const adminFormRef = ref()
-const employeeFormRef = ref()
 
 const handleUserLogin = async () => {
   await userFormRef.value.validate(async (valid) => {
@@ -167,26 +148,6 @@ const handleAdminLogin = async () => {
     }
   })
 }
-
-const handleEmployeeLogin = async () => {
-  await employeeFormRef.value.validate(async (valid) => {
-    if (valid) {
-      loading.value = true
-      try {
-        const res = await loginApi.employeeLogin(employeeForm)
-        userStore.setUserInfo(res)
-        userStore.setUserType('employee')
-        userStore.setToken(res.id ? `employee_${res.id}` : `employee_${Date.now()}`)
-        ElMessage.success('登录成功')
-        router.push('/layout/dashboard')
-      } catch (error) {
-        ElMessage.error(error.message || '登录失败')
-      } finally {
-        loading.value = false
-      }
-    }
-  })
-}
 </script>
 
 <style scoped>
@@ -223,4 +184,3 @@ const handleEmployeeLogin = async () => {
   color: #666;
 }
 </style>
-

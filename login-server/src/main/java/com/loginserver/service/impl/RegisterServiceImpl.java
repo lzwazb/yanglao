@@ -2,15 +2,12 @@ package com.loginserver.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.loginserver.dao.AdministratorDao;
-import com.loginserver.dao.EmployeeDao;
 import com.loginserver.dao.FamilyDao;
 import com.loginserver.dao.UserDao;
 import com.loginserver.entity.Administrator;
-import com.loginserver.entity.Employee;
 import com.loginserver.entity.Family;
 import com.loginserver.entity.User;
 import com.loginserver.entity.dto.RegisterAdministratorDto;
-import com.loginserver.entity.dto.RegisterEmployeeDto;
 import com.loginserver.entity.dto.RegisterFamilyDto;
 import com.loginserver.entity.dto.RegisterUserDto;
 import com.loginserver.service.RegisterService;
@@ -29,9 +26,6 @@ public class RegisterServiceImpl implements RegisterService {
     
     @Autowired
     private AdministratorDao administratorDao;
-    
-    @Autowired
-    private EmployeeDao employeeDao;
     
     @Autowired
     private FamilyDao familyDao;
@@ -90,35 +84,6 @@ public class RegisterServiceImpl implements RegisterService {
         administratorDao.insert(administrator);
         
         return administrator;
-    }
-    
-    @Override
-    public Employee registerEmployee(RegisterEmployeeDto registerEmployeeDto) {
-        // 验证必填字段
-        if (!StringUtils.hasText(registerEmployeeDto.getUsername()) || 
-            !StringUtils.hasText(registerEmployeeDto.getPassword())) {
-            throw new RuntimeException("用户名和密码不能为空");
-        }
-        
-        // 检查用户名是否已存在
-        LambdaQueryWrapper<Employee> employeeQueryWrapper = new LambdaQueryWrapper<>();
-        employeeQueryWrapper.eq(Employee::getUsername, registerEmployeeDto.getUsername());
-        Employee existingEmployee = employeeDao.selectOne(employeeQueryWrapper);
-        if (existingEmployee != null) {
-            throw new RuntimeException("用户名已存在");
-        }
-        
-        // 创建新员工
-        Employee employee = new Employee();
-        BeanUtils.copyProperties(registerEmployeeDto, employee);
-        employee.setStatus(0); // 0-在职状态
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-        
-        // 保存到数据库
-        employeeDao.insert(employee);
-        
-        return employee;
     }
     
     @Override

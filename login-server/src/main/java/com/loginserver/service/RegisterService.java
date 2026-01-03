@@ -1,11 +1,9 @@
 package com.loginserver.service;
 
 import com.loginserver.entity.Administrator;
-import com.loginserver.entity.Employee;
 import com.loginserver.entity.Family;
 import com.loginserver.entity.User;
 import com.loginserver.entity.dto.RegisterAdministratorDto;
-import com.loginserver.entity.dto.RegisterEmployeeDto;
 import com.loginserver.entity.dto.RegisterFamilyDto;
 import com.loginserver.entity.dto.RegisterUserDto;
 
@@ -24,13 +22,6 @@ public interface RegisterService {
      * @return 注册成功的管理员信息
      */
     Administrator registerAdministrator(RegisterAdministratorDto registerAdministratorDto);
-    
-    /**
-     * 员工注册
-     * @param registerEmployeeDto 注册信息
-     * @return 注册成功的员工信息
-     */
-    Employee registerEmployee(RegisterEmployeeDto registerEmployeeDto);
     
     /**
      * 家人注册

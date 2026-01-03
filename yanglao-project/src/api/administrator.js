@@ -86,43 +86,6 @@ export const familyApi = {
   }
 }
 
-// 员工管理
-export const employeeApi = {
-  addEmployee(data) {
-    return request({
-      url: '/administrator/employee',
-      method: 'post',
-      data
-    })
-  },
-  deleteEmployee(id) {
-    return request({
-      url: `/administrator/employee/delete/${id}`,
-      method: 'post'
-    })
-  },
-  updateEmployee(data) {
-    return request({
-      url: '/administrator/employee/update',
-      method: 'post',
-      data
-    })
-  },
-  getEmployee(id) {
-    return request({
-      url: `/administrator/employee/${id}`,
-      method: 'get'
-    })
-  },
-  getEmployeePage(pageNum = 1, pageSize = 10) {
-    return request({
-      url: '/administrator/employee/page',
-      method: 'get',
-      params: { pageNum, pageSize }
-    })
-  }
-}
-
 // 管理员管理
 export const administratorApi = {
   addAdministrator(data) {

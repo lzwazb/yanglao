@@ -15,7 +15,7 @@ export const useUserStore = defineStore('user', () => {
 
   const token = ref(getLocalStorage('token', ''))
   const userInfo = ref(getLocalStorage('userInfo', null))
-  const userType = ref(getLocalStorage('userType', '')) // user, admin, family, employee
+  const userType = ref(getLocalStorage('userType', '')) // user, admin, family
 
   const setToken = (newToken) => {
     token.value = newToken
@@ -51,4 +51,3 @@ export const useUserStore = defineStore('user', () => {
     logout
   }
 })
-

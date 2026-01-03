@@ -43,7 +43,6 @@
           <el-table :data="healthBookings" style="width: 100%">
             <el-table-column prop="date" label="预约日期" />
             <el-table-column prop="time" label="预约时间" />
-            <el-table-column prop="employee" label="健康管家" />
             <el-table-column prop="status" label="状态">
               <template #default="{ row }">
                 <el-tag :type="row.status === '已确认' ? 'success' : 'info'">{{ row.status }}</el-tag>
@@ -112,7 +111,7 @@ import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
-const isAdmin = computed(() => userStore.userType === 'admin' || userStore.userType === 'employee')
+const isAdmin = computed(() => userStore.userType === 'admin')
 const canBook = computed(() => ['user', 'family'].includes(userStore.userType))
 
 const healthRecords = ref([
@@ -120,7 +119,7 @@ const healthRecords = ref([
 ])
 
 const healthBookings = ref([
-  { id: 1, date: '2024-01-20', time: '10:00', employee: '张医生', status: '已确认' }
+  { id: 1, date: '2024-01-20', time: '10:00', status: '已确认' }
 ])
 
 const recordDialogVisible = ref(false)

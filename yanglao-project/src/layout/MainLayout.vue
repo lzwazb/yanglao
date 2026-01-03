@@ -48,7 +48,6 @@
             </template>
             <el-menu-item index="/layout/admin/user">用户管理</el-menu-item>
             <el-menu-item index="/layout/admin/family">家人管理</el-menu-item>
-            <el-menu-item index="/layout/admin/employee">员工管理</el-menu-item>
             <el-menu-item index="/layout/admin/administrator">管理员管理</el-menu-item>
           </el-sub-menu>
 
@@ -91,7 +90,7 @@
             <span>健康管理</span>
           </el-menu-item>
 
-          <el-menu-item index="/layout/activity/list">
+          <el-menu-item index="/layout/activity/list" v-if="userStore.userType !== 'admin'">
             <el-icon><Trophy /></el-icon>
             <span>活动列表</span>
           </el-menu-item>
@@ -101,7 +100,7 @@
             <span>活动管理</span>
           </el-menu-item>
 
-          <el-menu-item index="/layout/notice/list">
+          <el-menu-item index="/layout/notice/list" v-if="userStore.userType !== 'admin'">
             <el-icon><Bell /></el-icon>
             <span>公告栏</span>
           </el-menu-item>

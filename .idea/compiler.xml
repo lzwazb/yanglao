@@ -9,15 +9,17 @@
         <outputRelativeToContentRoot value="true" />
         <module name="login-server" />
         <module name="business-server" />
+        <module name="user-server" />
+        <module name="activity-server" />
         <module name="common-server" />
         <module name="administrator-server" />
-        <module name="user-server" />
         <module name="message-server" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="activity-server" options="-parameters" />
       <module name="administrator-server" options="-parameters" />
       <module name="business-server" options="-parameters" />
       <module name="common-server" options="-parameters" />

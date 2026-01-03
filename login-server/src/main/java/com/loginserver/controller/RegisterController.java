@@ -1,11 +1,9 @@
 package com.loginserver.controller;
 
 import com.loginserver.entity.Administrator;
-import com.loginserver.entity.Employee;
 import com.loginserver.entity.Family;
 import com.loginserver.entity.User;
 import com.loginserver.entity.dto.RegisterAdministratorDto;
-import com.loginserver.entity.dto.RegisterEmployeeDto;
 import com.loginserver.entity.dto.RegisterFamilyDto;
 import com.loginserver.entity.dto.RegisterUserDto;
 import com.loginserver.service.RegisterService;
@@ -32,12 +30,6 @@ public class RegisterController {
     @PostMapping("/admin")
     public Administrator registerAdministrator(@RequestBody RegisterAdministratorDto registerAdministratorDto) {
         return registerService.registerAdministrator(registerAdministratorDto);
-    }
-    
-    @Operation(summary = "员工注册", description = "员工注册接口")
-    @PostMapping("/employee")
-    public Employee registerEmployee(@RequestBody RegisterEmployeeDto registerEmployeeDto) {
-        return registerService.registerEmployee(registerEmployeeDto);
     }
     
     @Operation(summary = "家人注册", description = "家人注册接口")

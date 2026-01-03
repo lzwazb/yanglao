@@ -1,11 +1,9 @@
 package com.loginserver.controller;
 
 import com.loginserver.entity.Administrator;
-import com.loginserver.entity.Employee;
 import com.loginserver.entity.Family;
 import com.loginserver.entity.User;
 import com.loginserver.entity.dto.AdministratorDto;
-import com.loginserver.entity.dto.EmployeeDto;
 import com.loginserver.entity.dto.FamilyDto;
 import com.loginserver.entity.dto.UserDto;
 import com.loginserver.service.LoginService;
@@ -50,14 +48,5 @@ public class LoginController {
         Family loginFamily = loginService.familyLogin(familyDto);
 
         return loginFamily;
-    }
-
-    //员工登录
-    @PostMapping("/employee")
-    public Employee getEmplyee(@RequestBody EmployeeDto employeeDto) {
-
-        Employee loginEmployee = loginService.employeeLogin(employeeDto);
-
-        return loginEmployee;
     }
 }

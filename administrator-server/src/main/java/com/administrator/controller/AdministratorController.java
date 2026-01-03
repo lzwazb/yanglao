@@ -1,11 +1,9 @@
 package com.administrator.controller;
 
 import com.administrator.entity.Administrator;
-import com.administrator.entity.Employee;
 import com.administrator.entity.Family;
 import com.administrator.entity.User;
 import com.administrator.service.AdministratorService;
-import com.administrator.service.EmployeeService;
 import com.administrator.service.FamilyService;
 import com.administrator.service.UserService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,9 +24,6 @@ public class AdministratorController {
 
     @Autowired
     private FamilyService familyService;
-
-    @Autowired
-    private EmployeeService employeeService;
 
     @Autowired
     private AdministratorService administratorService;
@@ -102,38 +97,6 @@ public class AdministratorController {
     public Page<Family> getFamilyPage(@RequestParam(defaultValue = "1") int pageNum,
                                       @RequestParam(defaultValue = "10") int pageSize) {
         return familyService.page(new Page<>(pageNum, pageSize));
-    }
-
-    // --- Employee Management ---
-    @Operation(summary = "添加员工")
-    @PostMapping("/employee")
-    public boolean addEmployee(@RequestBody Employee employee) {
-        return employeeService.save(employee);
-    }
-
-    @Operation(summary = "删除员工")
-    @PostMapping("/employee/delete/{id}")
-    public boolean deleteEmployee(@PathVariable Long id) {
-        return employeeService.removeById(id);
-    }
-
-    @Operation(summary = "修改员工")
-    @PostMapping("/employee/update")
-    public boolean updateEmployee(@RequestBody Employee employee) {
-        return employeeService.updateById(employee);
-    }
-
-    @Operation(summary = "查询员工详情")
-    @GetMapping("/employee/{id}")
-    public Employee getEmployee(@PathVariable Long id) {
-        return employeeService.getById(id);
-    }
-
-    @Operation(summary = "分页查询员工")
-    @GetMapping("/employee/page")
-    public Page<Employee> getEmployeePage(@RequestParam(defaultValue = "1") int pageNum,
-                                          @RequestParam(defaultValue = "10") int pageSize) {
-        return employeeService.page(new Page<>(pageNum, pageSize));
     }
 
     // --- Administrator Management ---

@@ -25,14 +25,6 @@ export const loginApi = {
       method: 'post',
       data
     })
-  },
-  // 员工登录
-  employeeLogin(data) {
-    return request({
-      url: '/login/employee',
-      method: 'post',
-      data
-    })
   }
 }
 
@@ -58,14 +50,6 @@ export const registerApi = {
   familyRegister(data) {
     return request({
       url: '/register/family',
-      method: 'post',
-      data
-    })
-  },
-  // 员工注册
-  employeeRegister(data) {
-    return request({
-      url: '/register/employee',
       method: 'post',
       data
     })

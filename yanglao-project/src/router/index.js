@@ -49,12 +49,6 @@ const routes = [
         meta: { title: '家人管理', requiresAuth: true, role: 'admin' }
       },
       {
-        path: 'admin/employee',
-        name: 'EmployeeManagement',
-        component: () => import('@/views/admin/EmployeeManagement.vue'),
-        meta: { title: '员工管理', requiresAuth: true, role: 'admin' }
-      },
-      {
         path: 'admin/administrator',
         name: 'AdministratorManagement',
         component: () => import('@/views/admin/AdministratorManagement.vue'),

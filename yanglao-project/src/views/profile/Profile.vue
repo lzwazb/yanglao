@@ -60,11 +60,31 @@
               </el-form>
             </el-tab-pane>
             <el-tab-pane label="我的活动" name="activity">
-              <!-- 后端缺少活动接口，暂时为静态数据 -->
-              <el-table :data="myActivities" style="width: 100%">
-                <el-table-column prop="name" label="活动名称" />
-                <el-table-column prop="date" label="活动日期" />
-                <el-table-column prop="status" label="状态" />
+              <el-table :data="myActivities" style="width: 100%" v-loading="activityLoading">
+                <el-table-column prop="id" label="ID" width="60" />
+                <el-table-column label="活动名称">
+                  <template #default="{ row }">
+                    {{ getActivityName(row.activityId) }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="createTime" label="报名时间" />
+                <el-table-column prop="status" label="状态">
+                  <template #default="{ row }">
+                    <el-tag :type="row.status === 1 ? 'success' : 'info'">
+                      {{ row.status === 1 ? '已报名' : '已取消' }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                  <template #default="{ row }">
+                    <el-button
+                      size="small"
+                      type="danger"
+                      v-if="row.status === 1"
+                      @click="handleCancelActivity(row)"
+                    >取消报名</el-button>
+                  </template>
+                </el-table-column>
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="健康数据" name="health">
@@ -84,13 +104,12 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
-// import { userApi, familyApi, employeeApi, administratorApi } from '@/api/administrator'
 import { updateUserProfile, updateFamilyProfile, updateUserPassword, updateFamilyPassword } from '@/api/profile'
-import { userApi, familyApi, employeeApi, administratorApi } from '@/api/administrator';
-import { id } from 'element-plus/es/locale/index.mjs';
+import { userApi, familyApi, administratorApi } from '@/api/administrator';
+import { getMyRegistrations, cancelRegistration, getActivityDetail } from '@/api/activity'
 
 
 const userStore = useUserStore()
@@ -112,6 +131,11 @@ onMounted(() => {
     editForm.realName = userInfo.value.realName || userInfo.value.name || ''
     editForm.phone = userInfo.value.phone || ''
     editForm.email = userInfo.value.email || ''
+
+    // 如果是用户或家属，加载活动数据
+    if (userType.value === 'user' || userType.value === 'family') {
+      loadMyActivities()
+    }
   }
 })
 
@@ -139,9 +163,69 @@ const passwordRules = {
   ]
 }
 
-const myActivities = ref([
-  { name: '健康讲座', date: '2024-01-20', status: '已报名' }
-])
+// --- 活动相关逻辑 ---
+const myActivities = ref([])
+const activityLoading = ref(false)
+const activityCache = reactive({}) // 缓存活动详情，避免重复请求
+
+const loadMyActivities = async () => {
+  if (!userInfo.value.id) return
+  activityLoading.value = true
+  try {
+    const res = await getMyRegistrations(userInfo.value.id)
+    myActivities.value = res || []
+    // 异步加载活动详情以获取名称
+    res.forEach(item => {
+      if (!activityCache[item.activityId]) {
+        fetchActivityDetail(item.activityId)
+      }
+    })
+  } catch (error) {
+    console.error('获取活动记录失败', error)
+  } finally {
+    activityLoading.value = false
+  }
+}
+
+const fetchActivityDetail = async (id) => {
+  try {
+    const res = await getActivityDetail(id)
+    if (res) {
+      activityCache[id] = res
+    }
+  } catch (error) {
+    console.error(`获取活动${id}详情失败`, error)
+  }
+}
+
+const getActivityName = (id) => {
+  return activityCache[id] ? activityCache[id].title : `活动ID:${id}`
+}
+
+const handleCancelActivity = (row) => {
+  ElMessageBox.confirm('确定要取消报名吗？', '提示', {
+    type: 'warning'
+  }).then(async () => {
+    try {
+      await cancelRegistration({
+        activityId: row.activityId,
+        userId: userInfo.value.id
+      })
+      ElMessage.success('取消成功')
+      loadMyActivities()
+    } catch (error) {
+      // 错误已处理
+    }
+  })
+}
+
+// 监听Tab切换，切换到活动Tab时刷新数据
+watch(activeTab, (newVal) => {
+  if (newVal === 'activity' && (userType.value === 'user' || userType.value === 'family')) {
+    loadMyActivities()
+  }
+})
+
 
 const healthData = ref([
   { date: '2024-01-15', bloodPressure: '120/80', heartRate: '72', temperature: '36.5' }
@@ -174,11 +258,8 @@ const handleUpdateInfo = async () => {
       }
       response = await updateFamilyProfile(payload);
     }
-    // employee 和 admin 的个人信息修改在 administrator-server 中
-    else if (userType.value === 'employee') {
-      const payload = { ...userInfo.value, name: editForm.realName, phone: editForm.phone };
-      response = await employeeApi.updateEmployee(payload);
-    } else if (userType.value === 'admin') {
+    // admin 的个人信息修改在 administrator-server 中
+    else if (userType.value === 'admin') {
       const payload = { ...userInfo.value, realName: editForm.realName, phone: editForm.phone, email: editForm.email };
       response = await administratorApi.updateAdministrator(payload);
     } else {
@@ -224,7 +305,7 @@ const handleUpdatePassword = async () => {
           // updateFamilyPassword 需要 id 作为 URL 参数
           response = await updateFamilyPassword({ familyId: userId, oldPassword, newPassword })
         } else {
-          ElMessage.warning('管理员和员工的密码修改功能暂未开放。')
+          ElMessage.warning('管理员的密码修改功能暂未开放。')
           return
         }
 
@@ -268,4 +349,3 @@ const handleUpdatePassword = async () => {
   font-size: 14px;
 }
 </style>
-

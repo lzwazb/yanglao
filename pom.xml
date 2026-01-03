@@ -22,6 +22,7 @@
         <module>business-server</module>
         <module>common-server</module>
         <module>message-server</module>
+        <module>activity-server</module>
     </modules>
 
     <properties>
