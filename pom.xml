@@ -23,6 +23,7 @@
         <module>common-server</module>
         <module>message-server</module>
         <module>activity-server</module>
+        <module>health-server</module>
     </modules>
 
     <properties>

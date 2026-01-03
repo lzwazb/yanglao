@@ -81,6 +81,19 @@ const routes = [
         component: () => import('@/views/admin/MessageManagement.vue'),
         meta: { title: '留言管理', requiresAuth: true, role: 'admin' }
       },
+      // 健康管理 (管理员)
+      {
+        path: 'admin/health/profile',
+        name: 'HealthProfileManagement',
+        component: () => import('@/views/admin/HealthProfileManagement.vue'),
+        meta: { title: '健康档案管理', requiresAuth: true, role: 'admin' }
+      },
+      {
+        path: 'admin/health/data',
+        name: 'HealthDataManagement',
+        component: () => import('@/views/admin/HealthDataManagement.vue'),
+        meta: { title: '健康数据监控', requiresAuth: true, role: 'admin' }
+      },
       // 服务预约
       {
         path: 'service/booking',

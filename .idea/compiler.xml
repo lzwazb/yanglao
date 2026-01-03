@@ -14,6 +14,7 @@
         <module name="common-server" />
         <module name="administrator-server" />
         <module name="message-server" />
+        <module name="health-server" />
       </profile>
     </annotationProcessing>
   </component>
@@ -23,6 +24,7 @@
       <module name="administrator-server" options="-parameters" />
       <module name="business-server" options="-parameters" />
       <module name="common-server" options="-parameters" />
+      <module name="health-server" options="-parameters" />
       <module name="login-server" options="-parameters" />
       <module name="message-server" options="-parameters" />
       <module name="user-server" options="-parameters" />

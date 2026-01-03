@@ -88,12 +88,20 @@
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="健康数据" name="health">
-              <!-- 后端缺少健康数据接口，暂时为静态数据 -->
-              <el-table :data="healthData" style="width: 100%">
-                <el-table-column prop="date" label="日期" />
-                <el-table-column prop="bloodPressure" label="血压" />
-                <el-table-column prop="heartRate" label="心率" />
-                <el-table-column prop="temperature" label="体温" />
+              <el-table :data="healthDataList" style="width: 100%" v-loading="loadingData">
+                <el-table-column prop="measureTime" label="测量时间" width="180">
+                  <template #default="{ row }">
+                    {{ formatTime(row.measureTime) }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="血压(mmHg)" width="150">
+                  <template #default="{ row }">
+                    {{ row.bloodPressureHigh }}/{{ row.bloodPressureLow }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="heartRate" label="心率" width="100" />
+                <el-table-column prop="bloodSugar" label="血糖" width="100" />
+                <el-table-column prop="temperature" label="体温" width="100" />
               </el-table>
             </el-tab-pane>
           </el-tabs>
@@ -110,6 +118,7 @@ import { useUserStore } from '@/stores/user'
 import { updateUserProfile, updateFamilyProfile, updateUserPassword, updateFamilyPassword } from '@/api/profile'
 import { userApi, familyApi, administratorApi } from '@/api/administrator';
 import { getMyRegistrations, cancelRegistration, getActivityDetail } from '@/api/activity'
+import { getHealthDataList } from '@/api/health'
 
 
 const userStore = useUserStore()
@@ -135,6 +144,7 @@ onMounted(() => {
     // 如果是用户或家属，加载活动数据
     if (userType.value === 'user' || userType.value === 'family') {
       loadMyActivities()
+      loadHealthData()
     }
   }
 })
@@ -219,17 +229,36 @@ const handleCancelActivity = (row) => {
   })
 }
 
+// --- 健康数据逻辑 ---
+const healthDataList = ref([])
+const loadingData = ref(false)
+
+const loadHealthData = async () => {
+  if (!userInfo.value.id) return
+  loadingData.value = true
+  try {
+    const res = await getHealthDataList(userInfo.value.id)
+    healthDataList.value = res || []
+  } catch (error) {
+    console.error('获取健康数据失败', error)
+  } finally {
+    loadingData.value = false
+  }
+}
+
+const formatTime = (timeStr) => {
+  if (!timeStr) return ''
+  return timeStr.replace('T', ' ')
+}
+
 // 监听Tab切换，切换到活动Tab时刷新数据
 watch(activeTab, (newVal) => {
   if (newVal === 'activity' && (userType.value === 'user' || userType.value === 'family')) {
     loadMyActivities()
+  } else if (newVal === 'health' && (userType.value === 'user' || userType.value === 'family')) {
+    loadHealthData()
   }
 })
-
-
-const healthData = ref([
-  { date: '2024-01-15', bloodPressure: '120/80', heartRate: '72', temperature: '36.5' }
-])
 
 
 // 

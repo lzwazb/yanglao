@@ -1,105 +1,104 @@
 <template>
   <div class="health-management">
-    <el-row :gutter="20">
-      <el-col :span="12">
+    <el-tabs v-model="activeTab" class="health-tabs">
+      <el-tab-pane label="健康档案" name="profile">
         <el-card>
           <template #header>
-            <span>健康数据记录</span>
-            <el-button
-              v-if="isAdmin"
-              type="primary"
-              size="small"
-              style="float: right"
-              @click="handleAddRecord"
-            >添加记录</el-button>
+            <div class="card-header">
+              <span>基本健康档案</span>
+              <el-button type="primary" size="small" @click="handleEditProfile" v-if="!isEditingProfile">编辑档案</el-button>
+              <div v-else>
+                <el-button size="small" @click="cancelEditProfile">取消</el-button>
+                <el-button type="primary" size="small" @click="saveProfile">保存</el-button>
+              </div>
+            </div>
           </template>
-          <el-table :data="healthRecords" style="width: 100%">
-            <el-table-column prop="date" label="日期" />
-            <el-table-column prop="bloodPressure" label="血压" />
-            <el-table-column prop="heartRate" label="心率" />
-            <el-table-column prop="temperature" label="体温" />
-            <el-table-column prop="weight" label="体重(kg)" />
-            <el-table-column label="操作" width="150" v-if="isAdmin">
-              <template #default="{ row }">
-                <el-button size="small" @click="handleEdit(row)">编辑</el-button>
-                <el-button size="small" type="danger" @click="handleDelete(row.id)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <el-form :model="profileForm" label-width="100px" :disabled="!isEditingProfile">
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item label="身高(cm)">
+                  <el-input-number v-model="profileForm.height" :min="0" :max="300" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="体重(kg)">
+                  <el-input-number v-model="profileForm.weight" :min="0" :max="300" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="血型">
+                  <el-select v-model="profileForm.bloodType" placeholder="请选择">
+                    <el-option label="A型" value="A" />
+                    <el-option label="B型" value="B" />
+                    <el-option label="AB型" value="AB" />
+                    <el-option label="O型" value="O" />
+                    <el-option label="其他" value="Other" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
         </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card>
-          <template #header>
-            <span>健康预约</span>
-            <el-button
-              v-if="canBook"
-              type="primary"
-              size="small"
-              style="float: right"
-              @click="handleBookHealth"
-            >预约检测</el-button>
-          </template>
-          <el-table :data="healthBookings" style="width: 100%">
-            <el-table-column prop="date" label="预约日期" />
-            <el-table-column prop="time" label="预约时间" />
-            <el-table-column prop="status" label="状态">
-              <template #default="{ row }">
-                <el-tag :type="row.status === '已确认' ? 'success' : 'info'">{{ row.status }}</el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" width="100" v-if="canBook">
-              <template #default="{ row }">
-                <el-button size="small" type="danger" @click="handleCancelBooking(row.id)">取消</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-card>
-      </el-col>
-    </el-row>
+      </el-tab-pane>
 
-    <el-dialog v-model="recordDialogVisible" :title="recordForm.id ? '编辑记录' : '添加记录'" width="500px">
-      <el-form :model="recordForm" label-width="100px">
-        <el-form-item label="日期">
-          <el-date-picker v-model="recordForm.date" type="date" placeholder="选择日期" />
+      <el-tab-pane label="健康数据" name="data">
+        <el-card>
+          <template #header>
+            <div class="card-header">
+              <span>健康数据记录</span>
+              <el-button type="primary" size="small" @click="handleAddData">录入数据</el-button>
+            </div>
+          </template>
+
+          <el-table :data="healthDataList" style="width: 100%" v-loading="loadingData">
+            <el-table-column prop="measureTime" label="测量时间" width="180">
+              <template #default="{ row }">
+                {{ formatTime(row.measureTime) }}
+              </template>
+            </el-table-column>
+            <el-table-column label="血压(mmHg)" width="150">
+              <template #default="{ row }">
+                {{ row.bloodPressureHigh }}/{{ row.bloodPressureLow }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="heartRate" label="心率(次/分)" width="120" />
+            <el-table-column prop="bloodSugar" label="血糖(mmol/L)" width="120" />
+            <el-table-column prop="temperature" label="体温(℃)" width="120" />
+            <el-table-column label="操作">
+              <template #default="{ row }">
+                <el-button size="small" type="danger" @click="handleDeleteData(row.id)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-card>
+      </el-tab-pane>
+    </el-tabs>
+
+    <!-- 录入数据弹窗 -->
+    <el-dialog v-model="dataDialogVisible" title="录入健康数据" width="500px">
+      <el-form :model="dataForm" label-width="120px">
+        <el-form-item label="测量时间">
+          <el-date-picker v-model="dataForm.measureTime" type="datetime" placeholder="选择时间" value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
-        <el-form-item label="血压">
-          <el-input v-model="recordForm.bloodPressure" placeholder="如：120/80" />
+        <el-form-item label="收缩压(高压)">
+          <el-input-number v-model="dataForm.bloodPressureHigh" :min="0" :max="300" />
+        </el-form-item>
+        <el-form-item label="舒张压(低压)">
+          <el-input-number v-model="dataForm.bloodPressureLow" :min="0" :max="200" />
         </el-form-item>
         <el-form-item label="心率">
-          <el-input v-model="recordForm.heartRate" placeholder="次/分钟" />
+          <el-input-number v-model="dataForm.heartRate" :min="0" :max="200" />
+        </el-form-item>
+        <el-form-item label="血糖">
+          <el-input-number v-model="dataForm.bloodSugar" :min="0" :max="50" :precision="1" :step="0.1" />
         </el-form-item>
         <el-form-item label="体温">
-          <el-input v-model="recordForm.temperature" placeholder="℃" />
-        </el-form-item>
-        <el-form-item label="体重">
-          <el-input v-model="recordForm.weight" placeholder="kg" />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="recordForm.note" type="textarea" :rows="3" />
+          <el-input-number v-model="dataForm.temperature" :min="30" :max="45" :precision="1" :step="0.1" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="recordDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmitRecord">确定</el-button>
-      </template>
-    </el-dialog>
-
-    <el-dialog v-model="bookingDialogVisible" title="预约健康检测" width="500px">
-      <el-form :model="bookingForm" label-width="100px">
-        <el-form-item label="预约日期">
-          <el-date-picker v-model="bookingForm.date" type="date" placeholder="选择日期" />
-        </el-form-item>
-        <el-form-item label="预约时间">
-          <el-time-picker v-model="bookingForm.time" placeholder="选择时间" />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="bookingForm.note" type="textarea" :rows="3" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <el-button @click="bookingDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleSubmitBooking">确定</el-button>
+        <el-button @click="dataDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleSubmitData">确定</el-button>
       </template>
     </el-dialog>
   </div>
@@ -107,96 +106,149 @@
 
 <script setup>
 import { ref, reactive, onMounted, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
+import { getHealthProfile, saveHealthProfile, getHealthDataList, addHealthData, deleteHealthData } from '@/api/health'
 
 const userStore = useUserStore()
-const isAdmin = computed(() => userStore.userType === 'admin')
-const canBook = computed(() => ['user', 'family'].includes(userStore.userType))
+const activeTab = ref('profile')
+const isEditingProfile = ref(false)
+const loadingData = ref(false)
+const dataDialogVisible = ref(false)
+const healthDataList = ref([])
 
-const healthRecords = ref([
-  { id: 1, date: '2024-01-15', bloodPressure: '120/80', heartRate: '72', temperature: '36.5', weight: '65' }
-])
-
-const healthBookings = ref([
-  { id: 1, date: '2024-01-20', time: '10:00', status: '已确认' }
-])
-
-const recordDialogVisible = ref(false)
-const bookingDialogVisible = ref(false)
-
-const recordForm = reactive({
+const profileForm = reactive({
   id: null,
-  date: null,
-  bloodPressure: '',
-  heartRate: '',
-  temperature: '',
-  weight: '',
-  note: ''
+  userId: null,
+  height: null,
+  weight: null,
+  bloodType: ''
 })
 
-const bookingForm = reactive({
-  date: null,
-  time: null,
-  note: ''
+const dataForm = reactive({
+  measureTime: '',
+  bloodPressureHigh: null,
+  bloodPressureLow: null,
+  heartRate: null,
+  bloodSugar: null,
+  temperature: null
 })
 
-const handleAddRecord = () => {
-  Object.assign(recordForm, {
-    id: null,
-    date: null,
-    bloodPressure: '',
-    heartRate: '',
-    temperature: '',
-    weight: '',
-    note: ''
+// 加载健康档案
+const loadProfile = async () => {
+  if (!userStore.userInfo?.id) return
+  try {
+    const res = await getHealthProfile(userStore.userInfo.id)
+    if (res) {
+      Object.assign(profileForm, res)
+    } else {
+      // 如果没有档案，初始化userId
+      profileForm.userId = userStore.userInfo.id
+    }
+  } catch (error) {
+    console.error('获取健康档案失败', error)
+  }
+}
+
+// 加载健康数据列表
+const loadDataList = async () => {
+  if (!userStore.userInfo?.id) return
+  loadingData.value = true
+  try {
+    const res = await getHealthDataList(userStore.userInfo.id)
+    healthDataList.value = res || []
+  } catch (error) {
+    console.error('获取健康数据失败', error)
+  } finally {
+    loadingData.value = false
+  }
+}
+
+// 档案操作
+const handleEditProfile = () => {
+  isEditingProfile.value = true
+}
+
+const cancelEditProfile = () => {
+  isEditingProfile.value = false
+  loadProfile() // 恢复原数据
+}
+
+const saveProfile = async () => {
+  try {
+    // 确保userId存在
+    if (!profileForm.userId) {
+      profileForm.userId = userStore.userInfo.id
+    }
+    await saveHealthProfile(profileForm)
+    ElMessage.success('档案保存成功')
+    isEditingProfile.value = false
+    loadProfile()
+  } catch (error) {
+    console.error('保存档案失败', error)
+  }
+}
+
+// 数据操作
+const handleAddData = () => {
+  // 重置表单
+  Object.assign(dataForm, {
+    measureTime: new Date().toISOString().replace('T', ' ').substring(0, 19), // 默认当前时间
+    bloodPressureHigh: null,
+    bloodPressureLow: null,
+    heartRate: null,
+    bloodSugar: null,
+    temperature: null
   })
-  recordDialogVisible.value = true
+  dataDialogVisible.value = true
 }
 
-const handleEdit = (row) => {
-  Object.assign(recordForm, row)
-  recordDialogVisible.value = true
+const handleSubmitData = async () => {
+  try {
+    await addHealthData({
+      ...dataForm,
+      userId: userStore.userInfo.id
+    })
+    ElMessage.success('数据录入成功')
+    dataDialogVisible.value = false
+    loadDataList()
+  } catch (error) {
+    console.error('录入数据失败', error)
+  }
 }
 
-const handleDelete = (id) => {
-  ElMessage.success('删除成功')
-  // TODO: 调用后端接口
-}
-
-const handleSubmitRecord = () => {
-  ElMessage.success('保存成功')
-  recordDialogVisible.value = false
-  // TODO: 调用后端接口
-}
-
-const handleBookHealth = () => {
-  Object.assign(bookingForm, {
-    date: null,
-    time: null,
-    note: ''
+const handleDeleteData = (id) => {
+  ElMessageBox.confirm('确定要删除这条记录吗？', '提示', {
+    type: 'warning'
+  }).then(async () => {
+    try {
+      await deleteHealthData(id)
+      ElMessage.success('删除成功')
+      loadDataList()
+    } catch (error) {
+      console.error('删除失败', error)
+    }
   })
-  bookingDialogVisible.value = true
 }
 
-const handleSubmitBooking = () => {
-  ElMessage.success('预约成功')
-  bookingDialogVisible.value = false
-  // TODO: 调用后端接口
-}
-
-const handleCancelBooking = (id) => {
-  ElMessage.success('已取消预约')
-  // TODO: 调用后端接口
+const formatTime = (timeStr) => {
+  if (!timeStr) return ''
+  return timeStr.replace('T', ' ')
 }
 
 onMounted(() => {
-  // TODO: 加载数据
+  loadProfile()
+  loadDataList()
 })
 </script>
 
 <style scoped>
 .health-management {
   padding: 20px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

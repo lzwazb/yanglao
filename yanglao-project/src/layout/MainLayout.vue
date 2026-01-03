@@ -60,6 +60,15 @@
             <el-menu-item index="/layout/admin/service/order">服务订单管理</el-menu-item>
           </el-sub-menu>
 
+          <el-sub-menu index="health-manage" v-if="userStore.userType === 'admin'">
+            <template #title>
+              <el-icon><FirstAidKit /></el-icon>
+              <span>健康管理</span>
+            </template>
+            <el-menu-item index="/layout/admin/health/profile">健康档案管理</el-menu-item>
+            <el-menu-item index="/layout/admin/health/data">健康数据监控</el-menu-item>
+          </el-sub-menu>
+
           <el-menu-item index="/layout/admin/notice" v-if="userStore.userType === 'admin'">
             <el-icon><Bell /></el-icon>
             <span>公告管理</span>
@@ -85,7 +94,7 @@
             <span>服务评价</span>
           </el-menu-item>
 
-          <el-menu-item index="/layout/health/management">
+          <el-menu-item index="/layout/health/management" v-if="['user', 'family'].includes(userStore.userType)">
             <el-icon><FirstAidKit /></el-icon>
             <span>健康管理</span>
           </el-menu-item>
