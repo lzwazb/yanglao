@@ -8,11 +8,16 @@
         </div>
       </template>
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="id" label="ID" width="80" />
+        <el-table-column prop="id" label="ID" width="180" />
         <el-table-column prop="username" label="用户名" />
         <el-table-column prop="realName" label="真实姓名" />
         <el-table-column prop="email" label="邮箱" />
         <el-table-column prop="phone" label="手机号" />
+        <el-table-column prop="familyId" label="关联家属">
+          <template #default="{ row }">
+            {{ getFamilyName(row.familyId) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="status" label="状态">
           <template #default="{ row }">
             <el-tag :type="row.status === 0 ? 'success' : 'danger'">
@@ -57,8 +62,15 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="form.phone" />
         </el-form-item>
-        <el-form-item label="家庭ID" prop="familyId">
-          <el-input-number v-model="form.familyId" :min="1" />
+        <el-form-item label="关联家属" prop="familyId">
+          <el-select v-model="form.familyId" placeholder="请选择家属" clearable filterable>
+            <el-option
+              v-for="item in familyList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-radio-group v-model="form.status">
@@ -78,7 +90,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { userApi } from '@/api/administrator'
+import { userApi, familyApi } from '@/api/administrator'
 
 const tableData = ref([])
 const currentPage = ref(1)
@@ -87,6 +99,7 @@ const total = ref(0)
 const dialogVisible = ref(false)
 const dialogTitle = ref('添加用户')
 const formRef = ref()
+const familyList = ref([])
 
 const form = reactive({
   id: null,
@@ -106,11 +119,27 @@ const rules = {
 const fetchData = async () => {
   try {
     const res = await userApi.getUserPage(currentPage.value, pageSize.value)
+    console.log(res)
     tableData.value = res.records || []
     total.value = res.total || 0
   } catch (error) {
     ElMessage.error('获取数据失败')
   }
+}
+
+const fetchFamilyList = async () => {
+  try {
+    const res = await familyApi.getAllFamilies()
+    familyList.value = res || []
+  } catch (error) {
+    console.error('获取家属列表失败', error)
+  }
+}
+
+const getFamilyName = (familyId) => {
+  if (!familyId) return '无'
+  const family = familyList.value.find(f => f.id === familyId)
+  return family ? family.name : familyId
 }
 
 const handleAdd = () => {
@@ -169,8 +198,9 @@ const handleSubmit = async () => {
   })
 }
 
-onMounted(() => {
-  fetchData()
+onMounted(async () => {
+  await fetchFamilyList()
+  await fetchData()
 })
 </script>
 
@@ -185,4 +215,3 @@ onMounted(() => {
   align-items: center;
 }
 </style>
-

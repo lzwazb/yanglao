@@ -2,6 +2,8 @@ package com.administrator.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -11,8 +13,9 @@ import java.time.LocalDateTime;
 @Schema(name = "用户")
 public class User {
 
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+    @TableId(type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
 
     private String username;
 
@@ -32,6 +35,7 @@ public class User {
 
     private LocalDateTime updateTime;
 
-    private Integer familyId;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long familyId;
 
 }

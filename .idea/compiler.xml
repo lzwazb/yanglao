@@ -12,6 +12,7 @@
         <module name="common-server" />
         <module name="administrator-server" />
         <module name="user-server" />
+        <module name="message-server" />
       </profile>
     </annotationProcessing>
   </component>
@@ -21,6 +22,7 @@
       <module name="business-server" options="-parameters" />
       <module name="common-server" options="-parameters" />
       <module name="login-server" options="-parameters" />
+      <module name="message-server" options="-parameters" />
       <module name="user-server" options="-parameters" />
       <module name="yanglao" options="" />
     </option>

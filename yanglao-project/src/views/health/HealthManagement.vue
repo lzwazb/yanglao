@@ -5,7 +5,13 @@
         <el-card>
           <template #header>
             <span>健康数据记录</span>
-            <el-button type="primary" size="small" style="float: right" @click="handleAddRecord">添加记录</el-button>
+            <el-button
+              v-if="isAdmin"
+              type="primary"
+              size="small"
+              style="float: right"
+              @click="handleAddRecord"
+            >添加记录</el-button>
           </template>
           <el-table :data="healthRecords" style="width: 100%">
             <el-table-column prop="date" label="日期" />
@@ -13,7 +19,7 @@
             <el-table-column prop="heartRate" label="心率" />
             <el-table-column prop="temperature" label="体温" />
             <el-table-column prop="weight" label="体重(kg)" />
-            <el-table-column label="操作" width="150">
+            <el-table-column label="操作" width="150" v-if="isAdmin">
               <template #default="{ row }">
                 <el-button size="small" @click="handleEdit(row)">编辑</el-button>
                 <el-button size="small" type="danger" @click="handleDelete(row.id)">删除</el-button>
@@ -26,7 +32,13 @@
         <el-card>
           <template #header>
             <span>健康预约</span>
-            <el-button type="primary" size="small" style="float: right" @click="handleBookHealth">预约检测</el-button>
+            <el-button
+              v-if="canBook"
+              type="primary"
+              size="small"
+              style="float: right"
+              @click="handleBookHealth"
+            >预约检测</el-button>
           </template>
           <el-table :data="healthBookings" style="width: 100%">
             <el-table-column prop="date" label="预约日期" />
@@ -37,7 +49,7 @@
                 <el-tag :type="row.status === '已确认' ? 'success' : 'info'">{{ row.status }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="100">
+            <el-table-column label="操作" width="100" v-if="canBook">
               <template #default="{ row }">
                 <el-button size="small" type="danger" @click="handleCancelBooking(row.id)">取消</el-button>
               </template>
@@ -95,8 +107,13 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
+const isAdmin = computed(() => userStore.userType === 'admin' || userStore.userType === 'employee')
+const canBook = computed(() => ['user', 'family'].includes(userStore.userType))
 
 const healthRecords = ref([
   { id: 1, date: '2024-01-15', bloodPressure: '120/80', heartRate: '72', temperature: '36.5', weight: '65' }
@@ -184,4 +201,3 @@ onMounted(() => {
   padding: 20px;
 }
 </style>
-

@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/administrator")
 @Tag(name = "管理员接口")
@@ -40,20 +42,15 @@ public class AdministratorController {
 
     @Operation(summary = "删除用户")
     @PostMapping("/user/delete/{id}")
-    public boolean deleteUser(@PathVariable Integer id) {
+    public boolean deleteUser(@PathVariable Long id) {
         return userService.removeById(id);
     }
 
     @Operation(summary = "修改用户")
     @PostMapping("/user/update")
     public boolean updateUser(@RequestBody User user) {
+        System.out.println(user);
         return userService.updateById(user);
-    }
-
-    @Operation(summary = "查询用户详情")
-    @GetMapping("/user/{id}")
-    public User getUser(@PathVariable Integer id) {
-        return userService.getById(id);
     }
 
     @Operation(summary = "分页查询用户")
@@ -61,6 +58,12 @@ public class AdministratorController {
     public Page<User> getUserPage(@RequestParam(defaultValue = "1") int pageNum,
                                   @RequestParam(defaultValue = "10") int pageSize) {
         return userService.page(new Page<>(pageNum, pageSize));
+    }
+
+    @Operation(summary = "查询用户详情")
+    @GetMapping("/user/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userService.getById(id);
     }
 
     // --- Family Management ---
@@ -72,7 +75,7 @@ public class AdministratorController {
 
     @Operation(summary = "删除家属")
     @PostMapping("/family/delete/{id}")
-    public boolean deleteFamily(@PathVariable Integer id) {
+    public boolean deleteFamily(@PathVariable Long id) {
         return familyService.removeById(id);
     }
 
@@ -82,9 +85,15 @@ public class AdministratorController {
         return familyService.updateById(family);
     }
 
+    @Operation(summary = "获取所有家属列表")
+    @GetMapping("/family/list")
+    public List<Family> getAllFamilies() {
+        return familyService.list();
+    }
+
     @Operation(summary = "查询家属详情")
     @GetMapping("/family/{id}")
-    public Family getFamily(@PathVariable Integer id) {
+    public Family getFamily(@PathVariable Long id) {
         return familyService.getById(id);
     }
 
@@ -104,7 +113,7 @@ public class AdministratorController {
 
     @Operation(summary = "删除员工")
     @PostMapping("/employee/delete/{id}")
-    public boolean deleteEmployee(@PathVariable String id) {
+    public boolean deleteEmployee(@PathVariable Long id) {
         return employeeService.removeById(id);
     }
 
@@ -116,7 +125,7 @@ public class AdministratorController {
 
     @Operation(summary = "查询员工详情")
     @GetMapping("/employee/{id}")
-    public Employee getEmployee(@PathVariable String id) {
+    public Employee getEmployee(@PathVariable Long id) {
         return employeeService.getById(id);
     }
 
@@ -136,7 +145,7 @@ public class AdministratorController {
 
     @Operation(summary = "删除管理员")
     @PostMapping("/admin/delete/{id}")
-    public boolean deleteAdministrator(@PathVariable Integer id) {
+    public boolean deleteAdministrator(@PathVariable Long id) {
         return administratorService.removeById(id);
     }
 
@@ -148,7 +157,7 @@ public class AdministratorController {
 
     @Operation(summary = "查询管理员详情")
     @GetMapping("/admin/{id}")
-    public Administrator getAdministrator(@PathVariable Integer id) {
+    public Administrator getAdministrator(@PathVariable Long id) {
         return administratorService.getById(id);
     }
 

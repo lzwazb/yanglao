@@ -106,9 +106,14 @@
             <span>公告栏</span>
           </el-menu-item>
 
-          <el-menu-item index="/layout/message/board">
+          <el-menu-item index="/layout/message/board" v-if="userStore.userType !== 'admin'">
             <el-icon><ChatLineRound /></el-icon>
             <span>留言板</span>
+          </el-menu-item>
+
+          <el-menu-item index="/layout/admin/message" v-if="userStore.userType === 'admin'">
+            <el-icon><ChatLineRound /></el-icon>
+            <span>留言管理</span>
           </el-menu-item>
 
           <el-menu-item index="/layout/profile">

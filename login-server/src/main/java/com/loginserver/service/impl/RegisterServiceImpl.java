@@ -151,7 +151,7 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public Integer findFamilyIdByName(String name) {
+    public Long findFamilyIdByName(String name) {
         if (!StringUtils.hasText(name)) {
             return null;
         }

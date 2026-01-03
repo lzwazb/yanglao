@@ -21,6 +21,7 @@
         <module>user-server</module>
         <module>business-server</module>
         <module>common-server</module>
+        <module>message-server</module>
     </modules>
 
     <properties>

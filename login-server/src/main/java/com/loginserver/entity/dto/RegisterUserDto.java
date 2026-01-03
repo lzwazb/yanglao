@@ -23,6 +23,5 @@ public class RegisterUserDto {
     private String phone;
     
     @Schema(description = "家庭ID")
-    private Integer familyId;
+    private Long familyId;
 }
-

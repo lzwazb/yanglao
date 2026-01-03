@@ -80,6 +80,13 @@ const routes = [
         component: () => import('@/views/admin/NoticeManagement.vue'),
         meta: { title: '公告管理', requiresAuth: true, role: 'admin' }
       },
+      // 留言管理 (管理员)
+      {
+        path: 'admin/message',
+        name: 'MessageManagement',
+        component: () => import('@/views/admin/MessageManagement.vue'),
+        meta: { title: '留言管理', requiresAuth: true, role: 'admin' }
+      },
       // 服务预约
       {
         path: 'service/booking',

@@ -8,7 +8,7 @@
         </div>
       </template>
       <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="id" label="ID" width="80" />
+        <el-table-column prop="id" label="ID" width="180" />
         <el-table-column prop="username" label="用户名" />
         <el-table-column prop="realName" label="真实姓名" />
         <el-table-column prop="phone" label="手机号" />
@@ -179,4 +179,3 @@ onMounted(() => {
   align-items: center;
 }
 </style>
-

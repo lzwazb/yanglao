@@ -48,7 +48,7 @@ public class RegisterController {
 
     @Operation(summary = "查找家属ID", description = "根据姓名查找家属ID")
     @GetMapping("/findFamilyId")
-    public Integer findFamilyId(@RequestParam String name) {
+    public Long findFamilyId(@RequestParam String name) {
         return registerService.findFamilyIdByName(name);
     }
 }

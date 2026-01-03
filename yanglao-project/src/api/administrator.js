@@ -76,6 +76,13 @@ export const familyApi = {
       method: 'get',
       params: { pageNum, pageSize }
     })
+  },
+  // 获取所有家属列表（用于下拉选择）
+  getAllFamilies() {
+    return request({
+      url: '/administrator/family/list',
+      method: 'get'
+    })
   }
 }
 
@@ -152,4 +159,3 @@ export const administratorApi = {
     })
   }
 }
-

@@ -1,5 +1,7 @@
 package com.userserver.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -8,7 +10,8 @@ import lombok.Data;
 public class UpdateUserProfileDto {
 
     @Schema(description = "用户ID", requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer id;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
 
     @Schema(description = "真实姓名")
     private String realName;

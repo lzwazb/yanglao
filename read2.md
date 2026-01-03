@@ -51,6 +51,11 @@
     *   前端：`src/views/notice` 目录包含公告列表页面，`src/views/admin/NoticeManagement.vue` 包含公告管理页面。
     *   功能：支持管理员发布和管理公告，用户查看公告列表。
 
+### 2.6 消息留言 (`message`)
+*   **现状**：前端 `src/views/message` 已有 `MessageBoard.vue`，后端未见留言板相关控制器。
+*   **待办**：需实现留言发布、回复及管理功能的后端接口。
+
+
 ## 3. 待开发/完善功能模块
 
 通过对比前端视图目录 (`src/views`) 与后端现有控制器，发现以下模块尚处于开发初期或仅有前端页面：
@@ -63,9 +68,6 @@
 *   **现状**：前端 `src/views/health` 已有 `HealthManagement.vue`，后端未见对应的健康管理服务或控制器。
 *   **待办**：需开发健康档案、体征记录、用药提醒等后端功能（建议扩展 `user-server` 或新建服务）。
 
-### 3.3 消息留言 (`message`)
-*   **现状**：前端 `src/views/message` 已有 `MessageBoard.vue`，后端未见留言板相关控制器。
-*   **待办**：需实现留言发布、回复及管理功能的后端接口。
 
 ## 4. 总结
 

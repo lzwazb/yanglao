@@ -44,5 +44,5 @@ public interface RegisterService {
      * @param name 家属姓名
      * @return 家属ID，如果未找到返回null
      */
-    Integer findFamilyIdByName(String name);
+    Long findFamilyIdByName(String name);
 }
