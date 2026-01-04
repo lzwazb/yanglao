@@ -59,7 +59,7 @@
                 </el-form-item>
               </el-form>
             </el-tab-pane>
-            <el-tab-pane label="我的活动" name="activity">
+            <el-tab-pane label="我的活动" name="activity" v-if="userType === 'user'">
               <el-table :data="myActivities" style="width: 100%" v-loading="activityLoading">
                 <el-table-column prop="id" label="ID" width="60" />
                 <el-table-column label="活动名称">
@@ -87,7 +87,7 @@
                 </el-table-column>
               </el-table>
             </el-tab-pane>
-            <el-tab-pane label="健康数据" name="health">
+            <el-tab-pane label="健康数据" name="health" v-if="userType === 'user'">
               <el-table :data="healthDataList" style="width: 100%" v-loading="loadingData">
                 <el-table-column prop="measureTime" label="测量时间" width="180">
                   <template #default="{ row }">
@@ -141,8 +141,8 @@ onMounted(() => {
     editForm.phone = userInfo.value.phone || ''
     editForm.email = userInfo.value.email || ''
 
-    // 如果是用户或家属，加载活动数据
-    if (userType.value === 'user' || userType.value === 'family') {
+    // 如果是用户，加载活动数据
+    if (userType.value === 'user') {
       loadMyActivities()
       loadHealthData()
     }
@@ -253,9 +253,9 @@ const formatTime = (timeStr) => {
 
 // 监听Tab切换，切换到活动Tab时刷新数据
 watch(activeTab, (newVal) => {
-  if (newVal === 'activity' && (userType.value === 'user' || userType.value === 'family')) {
+  if (newVal === 'activity' && userType.value === 'user') {
     loadMyActivities()
-  } else if (newVal === 'health' && (userType.value === 'user' || userType.value === 'family')) {
+  } else if (newVal === 'health' && userType.value === 'user') {
     loadHealthData()
   }
 })

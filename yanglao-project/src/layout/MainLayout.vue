@@ -74,12 +74,12 @@
             <span>公告管理</span>
           </el-menu-item>
 
-          <el-menu-item index="/layout/service/booking" v-if="['user', 'family'].includes(userStore.userType)">
+          <el-menu-item index="/layout/service/booking" v-if="userStore.userType === 'user'">
             <el-icon><Calendar /></el-icon>
             <span>服务预约</span>
           </el-menu-item>
 
-          <el-menu-item index="/layout/service/life" v-if="['user', 'family'].includes(userStore.userType)">
+          <el-menu-item index="/layout/service/life" v-if="userStore.userType === 'user'">
             <el-icon><Service /></el-icon>
             <span>生活服务</span>
           </el-menu-item>
@@ -89,17 +89,17 @@
             <span>我的长辈</span>
           </el-menu-item>
 
-          <el-menu-item index="/layout/service/review" v-if="['user', 'family'].includes(userStore.userType)">
+          <el-menu-item index="/layout/service/review" v-if="userStore.userType === 'user'">
             <el-icon><Star /></el-icon>
             <span>服务评价</span>
           </el-menu-item>
 
-          <el-menu-item index="/layout/health/management" v-if="['user', 'family'].includes(userStore.userType)">
+          <el-menu-item index="/layout/health/management" v-if="userStore.userType === 'user'">
             <el-icon><FirstAidKit /></el-icon>
             <span>健康管理</span>
           </el-menu-item>
 
-          <el-menu-item index="/layout/activity/list" v-if="userStore.userType !== 'admin'">
+          <el-menu-item index="/layout/activity/list" v-if="userStore.userType === 'user'">
             <el-icon><Trophy /></el-icon>
             <span>活动列表</span>
           </el-menu-item>

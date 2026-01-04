@@ -106,4 +106,10 @@ public class ActivityController {
     public Activity getActivity(@PathVariable Long id) {
         return activityService.getById(id);
     }
+
+    @Operation(summary = "获取活动总数(内部调用)")
+    @GetMapping("/count")
+    public Long getActivityCount() {
+        return activityService.count();
+    }
 }

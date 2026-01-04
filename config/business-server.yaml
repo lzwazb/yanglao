@@ -18,7 +18,7 @@ mybatis-plus:
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
-      id-type: assign_id
+      id-type: auto
 
 # Swagger UI 配置项 (参考 administrator-server 添加)
 springdoc:

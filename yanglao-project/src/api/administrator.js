@@ -122,3 +122,13 @@ export const administratorApi = {
     })
   }
 }
+
+// 统计接口
+export const statisticsApi = {
+  getDashboardStats() {
+    return request({
+      url: '/administrator/statistics/dashboard',
+      method: 'get'
+    })
+  }
+}

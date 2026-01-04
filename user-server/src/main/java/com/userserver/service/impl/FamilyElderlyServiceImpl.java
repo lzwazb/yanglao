@@ -21,7 +21,7 @@ public class FamilyElderlyServiceImpl implements FamilyElderlyService {
     private FamilyDao familyDao;
 
     @Override
-    public List<User> getElderlyByFamilyId(Integer familyId) {
+    public List<User> getElderlyByFamilyId(Long familyId) {
         // 验证家人是否存在
         Family family = familyDao.selectById(familyId);
         if (family == null) {
@@ -37,7 +37,7 @@ public class FamilyElderlyServiceImpl implements FamilyElderlyService {
     }
 
     @Override
-    public User getElderlyDetail(Integer familyId, Integer elderlyId) {
+    public User getElderlyDetail(Long familyId, Long elderlyId) {
         // 验证家人是否存在
         Family family = familyDao.selectById(familyId);
         if (family == null) {
@@ -58,5 +58,3 @@ public class FamilyElderlyServiceImpl implements FamilyElderlyService {
         return elderly;
     }
 }
-
-

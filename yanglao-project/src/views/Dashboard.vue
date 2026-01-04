@@ -28,7 +28,7 @@
             <el-icon class="action-icon" style="background-color: #f6ffed; color: #52c41a"><Tickets /></el-icon>
             <span>审核订单</span>
           </div>
-           <div class="action-item" @click="$router.push('/layout/admin/user')">
+          <div class="action-item" @click="$router.push('/layout/admin/user')">
             <el-icon class="action-icon" style="background-color: #fff0f6; color: #eb2f96"><User /></el-icon>
             <span>用户管理</span>
           </div>
@@ -48,7 +48,7 @@
             <el-icon class="action-icon" style="background-color: #fff7e6; color: #fa8c16"><Flag /></el-icon>
             <span>查看活动</span>
           </div>
-           <div class="action-item" @click="$router.push('/layout/message/board')">
+          <div class="action-item" @click="$router.push('/layout/message/board')">
             <el-icon class="action-icon" style="background-color: #fff0f6; color: #eb2f96"><ChatDotRound /></el-icon>
             <span>留言反馈</span>
           </div>
@@ -84,11 +84,11 @@
           </template>
           <el-timeline v-if="notices.length > 0" style="padding-left: 10px;">
             <el-timeline-item
-              v-for="notice in notices"
-              :key="notice.id"
-              :timestamp="formatTime(notice.createTime)"
-              :type="getNoticeType(notice.type)"
-              :hollow="true"
+                v-for="notice in notices"
+                :key="notice.id"
+                :timestamp="formatTime(notice.createTime)"
+                :type="getNoticeType(notice.type)"
+                :hollow="true"
             >
               {{ notice.title }}
             </el-timeline-item>
@@ -126,14 +126,15 @@ import { User, UserFilled, Service, Trophy, Bell, Flag, Tickets, Calendar, Trend
 import { useUserStore } from '@/stores/user'
 import { getNoticeList } from '@/api/notice'
 import { getActivityList } from '@/api/activity'
+import { statisticsApi } from '@/api/administrator'
 
 const userStore = useUserStore()
 
 const stats = ref([
-  { title: '用户总数', value: '0', icon: User, color: '#409EFF', bgColor: '#ecf5ff' },
-  { title: '家人总数', value: '0', icon: UserFilled, color: '#67C23A', bgColor: '#f0f9eb' },
-  { title: '服务总数', value: '0', icon: Service, color: '#E6A23C', bgColor: '#fdf6ec' },
-  { title: '活动总数', value: '0', icon: Trophy, color: '#F56C6C', bgColor: '#fef0f0' }
+  { title: '用户总数', value: '0', icon: User, color: '#409EFF', bgColor: '#ecf5ff', key: 'userCount' },
+  { title: '家人总数', value: '0', icon: UserFilled, color: '#67C23A', bgColor: '#f0f9eb', key: 'familyCount' },
+  { title: '服务总数', value: '0', icon: Service, color: '#E6A23C', bgColor: '#fdf6ec', key: 'serviceOrderCount' },
+  { title: '活动总数', value: '0', icon: Trophy, color: '#F56C6C', bgColor: '#fef0f0', key: 'activityCount' }
 ])
 
 const notices = ref([])
@@ -158,12 +159,12 @@ const loadData = async () => {
     const activityRes = await getActivityList()
     activities.value = activityRes.slice(0, 5)
 
-    // 模拟统计数据 (实际项目中应该调用后端接口获取)
-    // 这里简单模拟一下，如果有真实接口可以替换
-    stats.value[0].value = '128'
-    stats.value[1].value = '45'
-    stats.value[2].value = '32'
-    stats.value[3].value = '15'
+
+    const statsRes = await statisticsApi.getDashboardStats()
+    stats.value.forEach(stat => {
+      stat.value = statsRes[stat.key] || '0'
+    })
+
 
   } catch (error) {
     console.error('获取数据失败', error)

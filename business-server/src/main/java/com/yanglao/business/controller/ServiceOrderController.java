@@ -10,66 +10,79 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/service/order")
-@Tag(name = "服务订单管理")
+@Tag(name = "服务订单接口")
 public class ServiceOrderController {
 
     @Autowired
     private ServiceOrderService serviceOrderService;
 
-    @Operation(summary = "提交预约订单")
+    @Operation(summary = "预约服务")
     @PostMapping("/book")
-    public boolean book(@RequestBody ServiceOrder order) {
-        order.setStatus("PENDING");
-        order.setCreateTime(LocalDateTime.now());
-        return serviceOrderService.save(order);
+    public boolean book(@RequestBody ServiceOrder serviceOrder) {
+        serviceOrder.setStatus("PENDING");
+        serviceOrder.setCreateTime(LocalDateTime.now());
+        serviceOrder.setUpdateTime(LocalDateTime.now());
+        return serviceOrderService.save(serviceOrder);
     }
 
-    @Operation(summary = "获取用户订单列表")
+    @Operation(summary = "查询用户订单列表")
     @GetMapping("/list")
-    public Page<ServiceOrder> list(@RequestParam Long userId,
-                                   @RequestParam(defaultValue = "1") int pageNum,
-                                   @RequestParam(defaultValue = "10") int pageSize,
-                                   @RequestParam(required = false) String status) {
-        LambdaQueryWrapper<ServiceOrder> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(ServiceOrder::getUserId, userId);
+    public List<ServiceOrder> getUserOrders(@RequestParam Long userId, @RequestParam(required = false) String status) {
+        LambdaQueryWrapper<ServiceOrder> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ServiceOrder::getUserId, userId);
         if (status != null && !status.isEmpty()) {
-            wrapper.eq(ServiceOrder::getStatus, status);
+            queryWrapper.eq(ServiceOrder::getStatus, status);
         }
-        wrapper.orderByDesc(ServiceOrder::getCreateTime);
-        return serviceOrderService.page(new Page<>(pageNum, pageSize), wrapper);
+        queryWrapper.orderByDesc(ServiceOrder::getCreateTime);
+        return serviceOrderService.list(queryWrapper);
     }
 
     @Operation(summary = "取消订单")
     @PostMapping("/cancel/{id}")
-    public boolean cancel(@PathVariable Long id) {
-        ServiceOrder order = new ServiceOrder();
-        order.setId(id);
-        order.setStatus("CANCELLED");
-        return serviceOrderService.updateById(order);
-    }
-
-    @Operation(summary = "管理员分页查询订单")
-    @GetMapping("/admin/page")
-    public Page<ServiceOrder> adminPage(@RequestParam(defaultValue = "1") int pageNum,
-                                        @RequestParam(defaultValue = "10") int pageSize,
-                                        @RequestParam(required = false) String status) {
-        LambdaQueryWrapper<ServiceOrder> wrapper = new LambdaQueryWrapper<>();
-        if (status != null && !status.isEmpty()) {
-            wrapper.eq(ServiceOrder::getStatus, status);
+    public boolean cancelOrder(@PathVariable Long id) {
+        ServiceOrder order = serviceOrderService.getById(id);
+        if (order != null && "PENDING".equals(order.getStatus())) {
+            order.setStatus("CANCELLED");
+            order.setUpdateTime(LocalDateTime.now());
+            return serviceOrderService.updateById(order);
         }
-        wrapper.orderByDesc(ServiceOrder::getCreateTime);
-        return serviceOrderService.page(new Page<>(pageNum, pageSize), wrapper);
+        return false;
     }
 
-    @Operation(summary = "管理员更新订单状态")
+    // --- 管理员接口 ---
+
+    @Operation(summary = "分页查询所有订单(管理员)")
+    @GetMapping("/admin/page")
+    public Page<ServiceOrder> getAdminOrders(@RequestParam(defaultValue = "1") int pageNum,
+                                             @RequestParam(defaultValue = "10") int pageSize,
+                                             @RequestParam(required = false) String status) {
+        LambdaQueryWrapper<ServiceOrder> queryWrapper = new LambdaQueryWrapper<>();
+        if (status != null && !status.isEmpty()) {
+            queryWrapper.eq(ServiceOrder::getStatus, status);
+        }
+        queryWrapper.orderByDesc(ServiceOrder::getCreateTime);
+        return serviceOrderService.page(new Page<>(pageNum, pageSize), queryWrapper);
+    }
+
+    @Operation(summary = "更新订单状态(管理员)")
     @PostMapping("/admin/updateStatus")
-    public boolean updateStatus(@RequestParam Long id, @RequestParam String status) {
-        ServiceOrder order = new ServiceOrder();
-        order.setId(id);
-        order.setStatus(status);
-        return serviceOrderService.updateById(order);
+    public boolean updateOrderStatus(@RequestParam Long id, @RequestParam String status) {
+        ServiceOrder order = serviceOrderService.getById(id);
+        if (order != null) {
+            order.setStatus(status);
+            order.setUpdateTime(LocalDateTime.now());
+            return serviceOrderService.updateById(order);
+        }
+        return false;
+    }
+
+    @Operation(summary = "获取订单总数(内部调用)")
+    @GetMapping("/count")
+    public Long getServiceOrderCount() {
+        return serviceOrderService.count();
     }
 }

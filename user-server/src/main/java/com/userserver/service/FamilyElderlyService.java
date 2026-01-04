@@ -11,7 +11,7 @@ public interface FamilyElderlyService {
      * @param familyId 家人ID
      * @return 老人信息列表
      */
-    List<User> getElderlyByFamilyId(Integer familyId);
+    List<User> getElderlyByFamilyId(Long familyId);
 
     /**
      * 根据家人ID和老人ID查询老人详细信息
@@ -19,7 +19,5 @@ public interface FamilyElderlyService {
      * @param elderlyId 老人ID
      * @return 老人详细信息
      */
-    User getElderlyDetail(Integer familyId, Integer elderlyId);
+    User getElderlyDetail(Long familyId, Long elderlyId);
 }
-
-
