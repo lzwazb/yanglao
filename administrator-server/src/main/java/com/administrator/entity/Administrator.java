@@ -16,7 +16,7 @@ import lombok.Data;
 @Schema(name = "管理员")
 public class Administrator {
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Schema(name = "留言板")
 public class Message {
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 

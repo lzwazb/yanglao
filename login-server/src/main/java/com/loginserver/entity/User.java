@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Schema(name = "用户")
 public class User {
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Schema(name = "家人")
 public class Family {
 
-    @TableId(type = IdType.ASSIGN_ID)
+    @TableId(type = IdType.AUTO)
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
