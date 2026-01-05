@@ -12,8 +12,8 @@
         <module name="user-server" />
         <module name="activity-server" />
         <module name="common-server" />
-        <module name="administrator-server" />
         <module name="message-server" />
+        <module name="administrator-server" />
         <module name="health-server" />
       </profile>
     </annotationProcessing>
