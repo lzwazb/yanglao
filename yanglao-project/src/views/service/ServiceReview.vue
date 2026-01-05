@@ -84,16 +84,26 @@ const loadOrders = async () => {
   try {
     const res = await getUserOrders({
       userId: currentUserId.value,
-      pageNum: pageNum.value,
-      pageSize: pageSize.value,
       status: 'COMPLETED' // 只查询已完成的订单
     })
+
+    let orders = []
+    if (Array.isArray(res)) {
+      // 后端返回的是数组（全量列表），进行前端分页
+      total.value = res.length
+      const start = (pageNum.value - 1) * pageSize.value
+      const end = start + pageSize.value
+      orders = res.slice(start, end)
+    } else {
+      // 后端返回的是分页对象
+      orders = res.records || []
+      total.value = res.total || 0
+    }
 
     // 这里需要额外查询每个订单是否已评价，或者后端在返回订单列表时带上评价状态
     // 假设后端目前没带，我们前端暂时先通过尝试获取评价来判断（实际优化应由后端提供字段）
     // 为了演示，这里先简单处理，实际项目中建议后端 ServiceOrderDTO 增加 hasReview 字段
 
-    const orders = res.records
     for (let order of orders) {
       try {
         const review = await getReviewByOrder(order.id)
@@ -104,7 +114,6 @@ const loadOrders = async () => {
     }
 
     orderList.value = orders
-    total.value = res.total
   } catch (error) {
     console.error('加载订单列表失败', error)
   } finally {
