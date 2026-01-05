@@ -187,19 +187,12 @@ const loadOrders = async () => {
   loading.value = true
   try {
     const res = await getUserOrders({
-      userId: currentUserId.value
+      userId: currentUserId.value,
+      pageNum: pageNum.value,
+      pageSize: pageSize.value
     })
-
-    if (Array.isArray(res)) {
-      total.value = res.length
-      // 前端分页处理
-      const start = (pageNum.value - 1) * pageSize.value
-      const end = start + pageSize.value
-      bookingList.value = res.slice(start, end)
-    } else {
-      bookingList.value = res.records || []
-      total.value = res.total || 0
-    }
+    bookingList.value = res.records
+    total.value = res.total
   } catch (error) {
     console.error('加载订单列表失败', error)
   } finally {
